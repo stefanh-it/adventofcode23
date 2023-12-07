@@ -25,17 +25,17 @@ for text_line in text_lines:
     
 #print(f"{games}")
 def evaluate_game(game):
-    red_cubes = 0
-    blue_cubes = 0
-    green_cubes = 0
+    red_cubes = []
+    blue_cubes = []
+    green_cubes = []
 
     for cubeset in game:
         if "red" in cubeset:
-            red_cubes += cubeset["red"]
+            red_cubes.append(cubeset["red"])
         if "green" in cubeset:
-            green_cubes += cubeset["green"]
+            green_cubes.append(cubeset["green"])
         if "blue" in cubeset:
-            blue_cubes += cubeset["blue"]
+            blue_cubes.append(cubeset["blue"])
     return red_cubes, green_cubes, blue_cubes
 
 failed_game_index = []
@@ -43,7 +43,7 @@ successful_game_index = []
 
 for game in games:
     red_cubes, green_cubes, blue_cubes = evaluate_game(game)
-    if red_cubes > 12 or green_cubes > 13 or blue_cubes > 14:
+    if max(red_cubes) > 12 or max(green_cubes) > 13 or max(blue_cubes) > 14:
         #print("Invalid game")
         failed_game_index.append(games.index(game)+1)
     else:
