@@ -1,7 +1,7 @@
 import os
 import re
 
-file_path = os.path.join(os.path.dirname(__file__), 'input_small.txt')
+file_path = os.path.join(os.path.dirname(__file__), 'input_ari.txt')
 with open(file_path, 'r' ) as file:
     text_lines = file.read().splitlines()
 cubesets = []
