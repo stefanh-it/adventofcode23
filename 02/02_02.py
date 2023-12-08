@@ -42,14 +42,31 @@ failed_game_index = []
 successful_game_index = []
 total_sum = 0
 
+# Search for the lowest number of cubes in each color and check if it is 1
+def evaluate_lowest_cubes(red_cubes, green_cubes, blue_cubes):
+    if len(red_cubes) == 1:
+        min_red_cubes = red_cubes[0]
+    else:
+        min_red_cubes = max(red_cubes)
+    if len(green_cubes) == 1:
+        min_green_cubes = green_cubes[0]
+    else:
+        min_green_cubes = max(green_cubes)
+    if len(blue_cubes) == 1:
+        min_blue_cubes = blue_cubes[0]
+    else:
+        min_blue_cubes = max(blue_cubes)
+    return min_red_cubes, min_green_cubes, min_blue_cubes
+
+
 for game in games:
     product = 0
     red_cubes, green_cubes, blue_cubes = evaluate_game(game)
-    if any (type(i) is not list for i in evaluate_game(game)):
-        i 
-    # Try if return of cubes is a list or integer, return either int or min
+    print(f"Red: {red_cubes}, Green: {green_cubes}, Blue: {blue_cubes}")
+    min_red_cubes, min_green_cubes, min_blue_cubes = evaluate_lowest_cubes(red_cubes, green_cubes, blue_cubes)
+    print(f"Min Red: {min_red_cubes}, Min Green: {min_green_cubes}, Min Blue: {min_blue_cubes}")
 
-    #product = lowest_red_cubes * lowest_blue_cubes * lowest_green_cubes
-    #print(product)
+    product = min_red_cubes * min_blue_cubes * min_green_cubes
+    total_sum += product
 
 print(total_sum)
