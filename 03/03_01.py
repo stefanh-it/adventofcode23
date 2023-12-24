@@ -1,11 +1,14 @@
 import os
 import re
+from itertools import zip_longest
 
 file_path = os.path.join(os.path.dirname(__file__), 'input_small.txt')
 with open(file_path, 'r', encoding='utf-8') as file:
     text_lines = file.read().splitlines()
     
-
+# symbols = {}
+# for char in file.read():
+#    if char
 
 def get_coordinates(text_lines) -> list:
     coordinates = []    # [char, -> Index from character in input matrix
@@ -14,29 +17,24 @@ def get_coordinates(text_lines) -> list:
                         #   bottom_left, bottom, bottom_right]] --> Next line
     previous_line = []
     next_line = []
-    character_matrices = []
-    for colIndex, text_line in enumerate(text_lines):
+    matrices = []
+    for rowIndex, text_line in enumerate(text_lines):
         line_string = None
         #Check if index is greater than 0
-        if colIndex > 0:
-            previous_line = text_lines[colIndex-1]
+        if rowIndex > 0:
+            previous_line = text_lines[rowIndex-1]
         #Check if index is smaller than length of text_lines
-        if colIndex < len(text_lines)-1:
-            next_line = text_lines[colIndex+1]
-        if colIndex == 0:
+        if rowIndex < len(text_lines)-1:
+            next_line = text_lines[rowIndex+1]
+        if rowIndex == 0:
             previous_line = None
-        if colIndex == len(text_lines)-1:
+        if rowIndex == len(text_lines)-1:
             next_line = None
-        # print(f"previous_line: {previous_line}")
-        # print(f"text_line: {text_line}")
-        # print(f"next_line: {next_line}")
 
-        segment = [previous_line, text_line, next_line]
-
-        for rowIndex, char in enumerate(text_line):
-            character_matrix = []
+        for colIndex, char in enumerate(text_line):
+            matrix = []
             y_coord = text_lines.index(text_line)+1
-            coordinate = [char, [rowIndex, y_coord]]
+            coordinate = [char, [colIndex, y_coord]]
             coordinates.append(coordinate)
             top_char = ""
             top_right_char = ""
@@ -52,155 +50,196 @@ def get_coordinates(text_lines) -> list:
                 top_right_char = ""
                 top_left_char = ""
                 # Check if character is first character in line in first line
-                if rowIndex == 0:
+                if colIndex == 0:
                     left_char = ""
                     bottom_left_char = ""
-                    right_char = text_line[rowIndex+1]
-                    bottom_right_char = next_line[rowIndex+1]
-                    bottom_char = next_line[rowIndex]
+                    right_char = text_line[colIndex+1]
+                    bottom_right_char = next_line[colIndex+1]
+                    bottom_char = next_line[colIndex]
                 # Check if character is last character in line in first line
-                elif rowIndex == len(text_line)-1:
-                    left_char = text_line[rowIndex-1]
-                    bottom_left_char = next_line[rowIndex-1]
+                elif colIndex == len(text_line)-1:
+                    left_char = text_line[colIndex-1]
+                    bottom_left_char = next_line[colIndex-1]
                     right_char = ""
                     bottom_right_char = ""
-                    bottom_char = next_line[rowIndex]
+                    bottom_char = next_line[colIndex]
                 # Check if any character in in between
-                elif rowIndex > 0 and rowIndex < len(text_line)-1:
-                    left_char = text_line[rowIndex-1]
-                    bottom_left_char = next_line[rowIndex-1]
-                    right_char = text_line[rowIndex+1]
-                    bottom_right_char = next_line[rowIndex+1]
-                    bottom_char = next_line[rowIndex]
+                elif colIndex > 0 and colIndex < len(text_line)-1:
+                    left_char = text_line[colIndex-1]
+                    bottom_left_char = next_line[colIndex-1]
+                    right_char = text_line[colIndex+1]
+                    bottom_right_char = next_line[colIndex+1]
+                    bottom_char = next_line[colIndex]
             elif next_line is None:
                 bottom_char = ""
                 bottom_left_char = ""
                 bottom_right_char = ""
                 # Check if character is first character in line in last line
-                if rowIndex == 0:
+                if colIndex == 0:
                     left_char = ""
                     top_left_char = ""
-                    right_char = text_line[rowIndex+1]
-                    top_right_char = previous_line[rowIndex+1]
-                    top_char = previous_line[rowIndex]
+                    right_char = text_line[colIndex+1]
+                    top_right_char = previous_line[colIndex+1]
+                    top_char = previous_line[colIndex]
                 # Check if character is last character in line in last line
-                elif rowIndex == len(text_line)-1:
-                    left_char = text_line[rowIndex-1]
-                    top_left_char = previous_line[rowIndex-1]
+                elif colIndex == len(text_line)-1:
+                    left_char = text_line[colIndex-1]
+                    top_left_char = previous_line[colIndex-1]
                     right_char = ""
                     top_right_char = ""
-                    top_char = previous_line[rowIndex]
-                elif rowIndex > 0 and rowIndex < len(text_line)-1:
-                    left_char = text_line[rowIndex-1]
-                    top_left_char = previous_line[rowIndex-1]
-                    right_char = text_line[rowIndex+1]
-                    top_right_char = previous_line[rowIndex+1]
-                    top_char = previous_line[rowIndex]
+                    top_char = previous_line[colIndex]
+                elif colIndex > 0 and colIndex < len(text_line)-1:
+                    left_char = text_line[colIndex-1]
+                    top_left_char = previous_line[colIndex-1]
+                    right_char = text_line[colIndex+1]
+                    top_right_char = previous_line[colIndex+1]
+                    top_char = previous_line[colIndex]
             # Check if character is not in first or last line
             elif next_line and previous_line:
-                bottom_char = next_line[rowIndex]
-                top_char = previous_line[rowIndex]
+                bottom_char = next_line[colIndex]
+                top_char = previous_line[colIndex]
                 # Check if character is first in line
-                if rowIndex == 0:
+                if colIndex == 0:
                     left_char = ""
                     top_left_char = ""
                     bottom_left_char = ""
-                    right_char = text_line[rowIndex+1]
-                    top_right_char = previous_line[rowIndex+1]
-                    bottom_right_char = next_line[rowIndex+1]
+                    right_char = text_line[colIndex+1]
+                    top_right_char = previous_line[colIndex+1]
+                    bottom_right_char = next_line[colIndex+1]
                 # Check if character is last in line
-                elif rowIndex == len(text_line)-1:
-                    left_char = text_line[rowIndex-1]
-                    top_left_char = previous_line[rowIndex-1]
-                    bottom_left_char = next_line[rowIndex-1]
+                elif colIndex == len(text_line)-1:
+                    left_char = text_line[colIndex-1]
+                    top_left_char = previous_line[colIndex-1]
+                    bottom_left_char = next_line[colIndex-1]
                     right_char = ""
                     top_right_char = ""
                     bottom_right_char = ""
                 # Check if character is in between
-                elif rowIndex > 0 and rowIndex < len(text_line)-1:
-                    left_char = text_line[rowIndex-1]
-                    top_left_char = previous_line[rowIndex-1]
-                    bottom_left_char = next_line[rowIndex-1]
-                    right_char = text_line[rowIndex+1]
-                    top_right_char = previous_line[rowIndex+1]
-                    bottom_right_char = next_line[rowIndex+1]
-            character_matrix = [char,
+                elif colIndex > 0 and colIndex < len(text_line)-1:
+                    left_char = text_line[colIndex-1]
+                    top_left_char = previous_line[colIndex-1]
+                    bottom_left_char = next_line[colIndex-1]
+                    right_char = text_line[colIndex+1]
+                    top_right_char = previous_line[colIndex+1]
+                    bottom_right_char = next_line[colIndex+1]
+            matrix = [char,
                               [top_left_char, top_char, top_right_char,
                                left_char, char, right_char,
-                               bottom_left_char, bottom_char, bottom_right_char]]
-            character_matrices.append(character_matrix)
+                               bottom_left_char, bottom_char, bottom_right_char],
+                               (rowIndex, colIndex)]
+            matrices.append(matrix)
         #return previous_line, text_line, next_line
-    print(f"character_games: {character_matrices}")
+    #print(f"Matrices: {matrices}")
 
-    return character_matrices
+    return matrices
 
-def evaluate_games(character_matrices, text_lines):
-    valid_numbers = []
-    digit = []
-    digits = []
-    valid_digit = []
-    valid_digits = []
-    for i, character_matrix in enumerate(character_matrices):
-        character = ""
-        character = str(character_matrix[0]) # any -> str(any) -> num(str)
-        set = character_matrix[1]
-        validators = ['#', '*', '+', '$', '=', '/', '@', '-'] # TODO: Find symbols with regEx instead (don't froget to exclude \.)
+def evaluate_games(matrices):
+    buffer = [] # num<n>[] Digit Buffer that stores the number until the check is complete
+    digits = [] # num<1-3>[] Collected digits that are validated
+    numbers = [] # num<1-3>[] Pieced together 
+
+    for _, matrix in enumerate(matrices):
+        character = str(matrix[0])
+        set = matrix[1]
+        validators = ['#', '*', '+', '$', '=', '/', '@', '-', '&'] # TODO: Find symbols with regEx instead (don't froget to exclude \.)
         
-        # Conditions
-        # any of the validators in set
-        # set[0] = right_char
-        # set[5] = left_char
-        
-        # Check if character is a valid digit
-        if character.isdigit() is True \
-                and any(x in set for x in validators) is False:
-            digit.append(character)
-        elif character.isdigit() is True \
-                and any(x in set for x in validators) is True:
-        # Check if char is a digit and and and an invalid digit 
-                    
-        # Check if char is a digit, not first in line and part of a valid number
-            if valid_digit:
-                if character.isdigit() is True \
-                        and set[5] == valid_digit[-1]:
-                    valid_digit.append(character)
-        # Check if char is a valid digit and part of a number
-            elif digit:
-                if character.isdigit() is True \
-                        and set[5] == digit[-1] \
-                        and any(x in set for x in validators) is True:
-                    valid_digit.append(int(''.join(digit) + str(character)))
-                    digit.clear()
+        # Validate `character`
+        # - 
+        if character.isdigit():  
+            if len(digits) > 0:
+                digits.append(character)
             else:
-                valid_digit.append(character)
-        # Check if char terminates a number
-        elif (character.isdigit() is False and \
-                set[5].isdigit() is True):
-            valid_digits.append(''.join(valid_digit))
-            digits.append(''.join(digit))
-            digit.clear()
-            valid_digit.clear()
+                buffer.append(character) # Add digits to buffer
+                 # Check if Any of the chars around are valid
+                if buffer and (any(x in set for x in validators) is True):
+                    digits.extend(buffer) # Write buffer into valids
+                    buffer.clear()
+        elif digits: 
+            numbers.append(int("".join(digits)))
+            digits.clear()
+        else:
+            buffer.clear()
         
-        # Clear lists if line is complete
-        if (i+1) % 10 == 0 and i > 0 and valid_digit is not None and digit is not None:
-            valid_digits.append(''.join(valid_digit))
-            digits.append(digit)
-            digit.clear()
-            valid_digit.clear()
-        #if (i+1) % 10 == 0 and i > 0 and valid_digit is not None and digit is not None:
+            
+    #print(f"Valid Number: {numbers}")
+    return numbers
+# .....482
+# ....+...
+def evaluate_gear_ratios (matrices, text_lines):
+    gear_ratios = []
+    # Length of a line TODO: Change when required
+
+    maxcolumns = 140
+
+    for rowIndex, text_line in enumerate(text_lines):
+        #Check if index is greater than 0
+        if rowIndex > 0:
+            previous_line = text_lines[rowIndex-1]
+        #Check if index is smaller than length of text_lines
+        if rowIndex < len(text_lines)-1:
+            next_line = text_lines[rowIndex+1]
+        if rowIndex == 0:
+            previous_line = None
+        if rowIndex == len(text_lines)-1:
+            next_line = None
+
+        gears = re.finditer(r'\*', str(text_line))
+        # Filter out empty gears / invalid lines
+        # Generator Expression
+        gen_gears = (gear for gear in gears if bool(gears))
+        for gear in gen_gears:
+
+            digits_previous = re.finditer(r'(\d+)', str(previous_line))
+            digits_line = re.finditer(r'(\d+)', str(text_line))
+            digits_next = re.finditer(r'(\d+)', str(next_line))
+            gear_colIndex = gear.start()
+            # print(f"gear_colIndex {gear_colIndex}")
+            # Calculate matrix from the entire list with index from matrix 
+            gear_matrix = matrices[(rowIndex*maxcolumns)+(gear_colIndex)]
+            gear_matrix_set = gear_matrix[1]
+            gear_matrix_coords = gear_matrix[2]
+
+            # Upper Row: Match of digits_previous may be in range of 
+            # starting or ending at colIndex -1,
+            # starting or ending at colIndex,
+            # starting or ending at colIndex +1 or ending at colIndex-1
+            # Check if set[0:2] and within the range of a match in digits_previous
+            # Only do this if the buffer is no longer than 2
 
 
-    valid_numbers.append(valid_digits)
+            buffer = []
+            for digit in digits_previous:
+                # Check if the digit is across all positions above
+                if gear_colIndex in range(digit.start(), digit.end()): #and \
+                    # gear_colIndex-1 in range(digit.span()) and \
+                    # gear_colIndex+1 in range(digit.span()):
+                    buffer.append(digit.group())
+                elif gear_colIndex-1 == digit.end()-1:
+                    buffer.append(digit.group())
+                elif gear_colIndex+1 == digit.start():
+                    buffer.append(digit.group())
+            for digit in digits_line:
+                if gear_colIndex == digit.end():
+                    buffer.append(digit.group())
+                    # print(digit.group())
+                if gear_colIndex+1 == digit.start():
+                    # print(digit.group())
+                    buffer.append(digit.group())
+            for digit in digits_next:
+                if gear_colIndex in range(digit.start(), digit.end()):
+                    buffer.append(digit.group())
+                elif gear_colIndex-1 == digit.end()-1:
+                    buffer.append(digit.group())
+                elif gear_colIndex+1 == digit.start():
+                    buffer.append(digit.group())
+            # print(f"buffer {buffer}")
+            if len(buffer) == 2:
+                gear_ratios.append(int(buffer[0]) * int(buffer[1]))
+    return gear_ratios
 
-    print(f"valid_numbers: {valid_numbers}")
 
-    return valid_numbers
-
-
-character_matrices = (list(get_coordinates(text_lines)))
-valid_numbers = evaluate_games(character_matrices, text_lines)
-#print(character_games)
-#evaluate_coordinates(coordinates)
-#print(coordinates)
-
-
+matrices = (list(get_coordinates(text_lines)))
+solution1 = sum(evaluate_games(matrices))
+print(solution1)
+solution2 = sum(evaluate_gear_ratios(matrices, text_lines))
+print(solution2)
