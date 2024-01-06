@@ -74,11 +74,11 @@ def rank_cards(card_types: list) -> int:
     cards = [x for x in card_types if x != []]
 #    print(cards[0])
     for card_section in (cards):
-        print(card_section)
+        #print(card_section)
         for card in card_section:
             converted_suits = []
             for suit in card[1]:
-                print(suit)
+                #print(suit)
                 converted_suit = 0
                 converted_suit = calculate_suit_power(suit)
                 converted_suits.append(converted_suit)
@@ -92,8 +92,8 @@ def rank_cards(card_types: list) -> int:
 
     card_types = flatten_list(card_types)
     for i, card in enumerate(card_types):
-        print(card[2])
-        print(i+1)
+        # print(card[2])
+        # print(i+1)
         solution += (int(card[2])*(i+1))
 
     return solution
