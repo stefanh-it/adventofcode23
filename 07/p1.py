@@ -1,4 +1,5 @@
 """Solve Day 7/Part 1 AdventOfCode."""
+import sys
 
 
 def get_hand_type(hands: list, bids: list) -> list:
@@ -50,38 +51,52 @@ def get_hand_type(hands: list, bids: list) -> list:
         #print(set(hand))
          
     card_types = [fives, fours, full_houses, triplets, two_pairs, pairs, high_cards]
+    card_types = list(reversed(card_types))
     return card_types
 
 
-def rank_cards(card_types: list) -> list:
+def rank_cards(card_types: list) -> int:
     """Function to rank the cards based on the power of the card position."""
+    solution = 0
     def calculate_suit_power(suit):
         if suit == 'T':
             return 10
-        elif suit == 'J':
+        if suit == 'J':
             return 11
-        elif suit == 'Q':
+        if suit == 'Q':
             return 12
-        elif suit == 'K':
+        if suit == 'K':
             return 13
-        elif suit == 'A':
+        if suit == 'A':
             return 14
-        else:
-            return int(suit)
-        
-    fives, fours, full_houses, triplets, two_pairs, pairs, high_cards = card_types
-        
-    for i, cards in enumerate(card_types):
-        print(cards)
-        converted_suits = []
-        for suit in cards[i]:
-            print(suit)
-            converted_suit = calculate_suit_power(suit)
-            converted_suits.append(converted_suit)
-        card.append(converted_suits)
-            
+        return int(suit)
 
-    return card_types
+    cards = [x for x in card_types if x != []]
+#    print(cards[0])
+    for card_section in (cards):
+        print(card_section)
+        for card in card_section:
+            converted_suits = []
+            for suit in card[1]:
+                print(suit)
+                converted_suit = 0
+                converted_suit = calculate_suit_power(suit)
+                converted_suits.append(converted_suit)
+            card[1] = converted_suits
+        card_section.sort(key=lambda x: x[1], reverse=False)
+    # print(card)
+        # card.append(converted_suits)
+
+    def flatten_list(card_types):
+        return [item for sublist in card_types for item in sublist]
+
+    card_types = flatten_list(card_types)
+    for i, card in enumerate(card_types):
+        print(card[2])
+        print(i+1)
+        solution += (int(card[2])*(i+1))
+
+    return solution
 
 def main(input):
     input = input.splitlines()
@@ -94,5 +109,5 @@ def main(input):
         hands.append(hand)
         bids.append(bid)
     solution = rank_cards(get_hand_type(hands, bids))
-    # print(hands, bids)
+    #print(hands, bids)
     return solution, None

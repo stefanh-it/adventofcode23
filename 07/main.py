@@ -4,7 +4,7 @@ import p1
 # import p2
 
 if sys.argv[1] == '1' and sys.argv[2] == 'test':
-    file_path = os.path.join(os.path.dirname(__file__), 'test.txt')
+    file_path = os.path.join(os.path.dirname(__file__), 'test_1.txt')
     with open(file_path, 'r', encoding='utf-8') as f:
         test_data = f.read()
         solution = p1.main(test_data)
