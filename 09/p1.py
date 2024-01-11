@@ -1,15 +1,15 @@
 """Puzzle Day 9 part 1 solution."""
 
 
-def process_acc_sum(histories, acc_sum):
+def process_acc_sum(histories: list, acc_sum: int) -> int:
     """Calculate the specified game result value."""
     for history in histories:
         acc_sum += history[-1]
-        print(histories)
+        # print(histories)
     return acc_sum
 
 
-def process_history(history):
+def process_history(history: list) -> list:
     """Process the history of a dataset in a row."""
     next_sequence = []
     for i, val in enumerate(history):
@@ -21,7 +21,7 @@ def process_history(history):
     return next_sequence
 
 
-def process_row(row, acc_sum):
+def process_row(row: str, acc_sum: int) -> int:
     """Process the rows from the input file."""
     history = row.split(" ")
     history = [int(i) for i in history]
@@ -36,7 +36,7 @@ def process_row(row, acc_sum):
     return acc_sum
 
 
-def main(data):
+def main(data: str) -> int:
     """Entering point of puzzle solution."""
     prediction = ''
     acc_sum = 0
@@ -49,4 +49,4 @@ def main(data):
 
 
 if __name__ == "__main__":
-    main(data)
+    main('**kwargs')
