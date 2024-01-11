@@ -1,12 +1,16 @@
-"""Puzzle Day 9 part 1 solution."""
+"""Puzzle Day 9 part 2 solution."""
 
 
-def process_acc_sum(histories, acc_sum):
-    """Calculate the specified game result value."""
-    for history in histories:
-        acc_sum += history[-1]
-        print(histories)
-    return acc_sum
+def process_acc_sum(histories):
+    """Calculate the specified game result value and prepend the previous."""
+    diff = 0
+    for i, history in enumerate(histories):
+        if i == 0:
+            diff = 0 + history[0]
+        else:
+            diff = history[0] - histories[i-1][0]
+            history.insert(0, diff)
+    return diff
 
 
 def process_history(history):
@@ -32,7 +36,7 @@ def process_row(row, acc_sum):
         histories.append(next_sequence)
         next_sequence = process_history(next_sequence)
     histories = histories[::-1]
-    acc_sum += process_acc_sum(histories, acc_sum)
+    acc_sum += process_acc_sum(histories)
     return acc_sum
 
 
