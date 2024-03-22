@@ -71,11 +71,14 @@ def get_distances(pairs: list[tuple]) -> int:
     dist: int = 0
     total_dist: int = 0
     # print(f"Pairs: {pairs}")
-    for pair in pairs:
+    for i, pair in enumerate(pairs):
         g1, g2 = pair
         x1, y1 = g1
         x2, y2 = g2
-        dist = abs(x2 - x1) + abs(y2 - y1)
+        abs_xdist = abs(x2 - x1)
+        abs_ydist = abs(y2 - y1)
+        dist = abs_xdist + abs_ydist
+        print(f"Pair No. {i} = {pair} Distance = {dist} X = {abs_xdist} Y = {abs_ydist}")
         total_dist += dist
     return total_dist
 
